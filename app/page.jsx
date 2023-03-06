@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import styles from "./page.module.css";
 import Navbar from "./components/Navbar";
 import Timer from "./components/Timer";
+import About from "./components/About";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,6 +13,7 @@ export default function Home() {
       <div className="max-w-4xl min-h-screen mx-auto">
         <Navbar />
         <Timer />
+        <About />
       </div>
     </div>
   );
