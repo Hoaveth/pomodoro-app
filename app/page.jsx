@@ -7,21 +7,27 @@ import Navbar from "./components/Navbar";
 import Timer from "./components/Timer";
 import About from "./components/About";
 import { useEffect, useState } from "react";
+import { useRef } from "react";
+import Alarm from "./components/Alarm";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const [pomodoro, setPomodoro] = useState(25);
-  const [shortBreak, setShortBreak] = useState(5);
+  const [shortBreak, setShortBreak] = useState(1);
   const [longBreak, setLongBreak] = useState(10);
   const [stage, setStage] = useState(0);
   const [countDown, setCountDown] = useState(60 * pomodoro);
   const [runTimer, setRunTimer] = useState(false);
 
+  const alarmRef = useRef();
+
   useEffect(() => {
     let timer;
     const selectedStage = setTimer(stage);
     if (runTimer) {
+      alarmRef.current.pause();
+
       setCountDown(60 * selectedStage);
       timer = setInterval(() => {
         setCountDown((countDown) => countDown - 1);
@@ -34,12 +40,17 @@ export default function Home() {
     };
   }, [runTimer]);
 
-  // useEffect(() => {
-  //   if (countDown < 0 && runTimer) {
-  //     setRunTimer(false);
-  //     setCountDown(0);
-  //   }
-  // }, [countDown, runTimer]);
+  useEffect(() => {
+    if (countDown < 0 && runTimer) {
+      timesUp();
+    }
+  }, [countDown, runTimer]);
+
+  const timesUp = () => {
+    setRunTimer(false);
+    setCountDown(0);
+    alarmRef.current.play();
+  };
 
   const switchStage = (index) => {
     setRunTimer(false);
@@ -72,6 +83,7 @@ export default function Home() {
           runTimer={runTimer}
         />
         <About />
+        <Alarm ref={alarmRef} />
       </div>
     </div>
   );
